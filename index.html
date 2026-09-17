@@ -29,7 +29,7 @@
 </head>
 <body>
 
-    <div class="dev-badge">📑 إدارة وتطوير أبو حازم العمري</div>
+    <div class="dev-badge">📑 إدارة وتطوير أبو الحازم العمري</div>
 
     <header>
         <h2 class="logo">المتجر البرمجي المتقدم</h2>
@@ -38,6 +38,7 @@
             <a href="#store">المواقع الجاهزة</a>
             <a href="#custom">اطلب صفحتك</a>
             <a href="auth.html" id="authLink">حسابي / دخول</a>
+            <a href="admin.html" style="color: #ef4444; font-weight: bold;">لوحة الإدارة 🛠️</a>
         </nav>
     </header>
 
@@ -48,22 +49,8 @@
 
     <div class="container" id="store">
         <h2 class="section-title">المواقع الجاهزة للتحميل الفوري</h2>
-        <div class="grid">
-            <div class="card">
-                <h3>قالب الشركات والخدمات</h3>
-                <p>موقع متكامل للشركات والمشاريع مصمم بملفات نظيفة وقابلة للتعديل الفوري.</p>
-                <button class="btn" onclick="downloadTemplate('قالب_الشركات', templateCode1)">تنزيل ملف الكود المباشر 📥</button>
-            </div>
-            <div class="card">
-                <h3>منصة الألعاب المصغرة</h3>
-                <p>لعبة ويب ممتعة مبنية بلغة جافاسكريبت البسيطة وجاهزة للتشغيل.</p>
-                <button class="btn" onclick="downloadTemplate('منصة_الألعاب', templateCode2)">تنزيل ملف الكود المباشر 📥</button>
-            </div>
-            <div class="card">
-                <h3>لوحة تحكم إدارية</h3>
-                <p>واجهة تحكم بتصميم عصري وداكن جاهزة للاستخدام التفاعلي.</p>
-                <button class="btn" onclick="downloadTemplate('لوحة_التحكم', templateCode3)">تنزيل ملف الكود المباشر 📥</button>
-            </div>
+        <div class="grid" id="dynamicGrid">
+            <!-- سيتم تعبئة القوالب تلقائياً هنا -->
         </div>
 
         <div class="custom-order-box" id="custom">
@@ -76,14 +63,12 @@
                 <label>تفاصيل ومواصفات الموقع المطلوبة:</label>
                 <textarea id="projectDetails" placeholder="اكتب كل تفاصيل موقعك والأقسام التي تريدها..."></textarea>
             </div>
-            <button class="btn" style="background: #2563eb;" onclick="sendCustomOrder()">إرسال الطلب للسحابة 🚀</button>
+            <button class="btn" style="background: #2563eb;" onclick="sendCustomOrder()">إرسال الطلب للنظام 🚀</button>
         </div>
     </div>
 
     <script>
-        const API_KEY = "$2a$10$Hj8N/vpuugwh9k/pupGakulkBIE4pq3W09JTAUiUKbtJfiWBdpJHS";
         const userEmail = localStorage.getItem('user_email') || "زائر غير مسجل";
-        
         if (userEmail !== "زائر غير مسجل") {
             document.getElementById('authLink').innerText = "حسابي (" + userEmail + ")";
         }
@@ -92,15 +77,49 @@
         const templateCode2 = "<!DOCTYPE html><html><head><title>لعبة جافاسكريبت</title></head><body><h1>منصة الألعاب</h1></body></html>";
         const templateCode3 = "<!DOCTYPE html><html><head><title>لوحة التحكم</title></head><body><h1>لوحة تحكم النظام</h1></body></html>";
 
+        // تحميل وعرض القوالب (الأساسية + المضافة من لوحة التحكم)
+        window.addEventListener('DOMContentLoaded', () => {
+            const grid = document.getElementById('dynamicGrid');
+            
+            let content = `
+                <div class="card">
+                    <h3>قالب الشركات والخدمات</h3>
+                    <p>موقع متكامل للشركات والمشاريع مصمم بملفات نظيفة وقابلة للتعديل الفوري.</p>
+                    <button class="btn" onclick="downloadTemplate('قالب_الشركات', templateCode1)">تنزيل ملف الكود المباشر 📥</button>
+                </div>
+                <div class="card">
+                    <h3>منصة الألعاب المصغرة</h3>
+                    <p>لعبة ويب ممتعة مبنية بلغة جافاسكريبت البسيطة وجاهزة للتشغيل.</p>
+                    <button class="btn" onclick="downloadTemplate('منصة_الألعاب', templateCode2)">تنزيل ملف الكود المباشر 📥</button>
+                </div>
+                <div class="card">
+                    <h3>لوحة تحكم إدارية</h3>
+                    <p>واجهة تحكم بتصميم عصري وداكن جاهزة للاستخدام التفاعلي.</p>
+                    <button class="btn" onclick="downloadTemplate('لوحة_التحكم', templateCode3)">تنزيل ملف الكود المباشر 📥</button>
+                </div>
+            `;
+
+            const customTemplates = JSON.parse(localStorage.getItem('app_custom_templates') || '[]');
+            customTemplates.forEach(t => {
+                content += `
+                    <div class="card" style="border: 2px solid #2563eb;">
+                        <h3>${t.title}</h3>
+                        <p>${t.desc}</p>
+                        <button class="btn" onclick="downloadTemplate('${t.title}', \`${t.code.replace(/`/g, '\\`')}\`)">تنزيل ملف الكود المباشر 📥</button>
+                    </div>
+                `;
+            });
+
+            grid.innerHTML = content;
+        });
+
         function downloadTemplate(fileName, codeContent) {
-            // 1. تنزيل الملف فعلياً على جهاز المستخدم
             const blob = new Blob([codeContent], { type: 'text/html;charset=utf-8;' });
             const link = document.createElement('a');
             link.href = URL.createObjectURL(blob);
             link.download = fileName + ".html";
             link.click();
 
-            // 2. تسجيل عملية التحميل محلياً وسحابياً
             let downloads = JSON.parse(localStorage.getItem('app_downloads') || '[]');
             downloads.push({ user: userEmail, item: fileName, time: new Date().toLocaleString() });
             localStorage.setItem('app_downloads', JSON.stringify(downloads));
@@ -121,7 +140,7 @@
             orders.push({ user: userEmail, fb: fb, details: details, time: new Date().toLocaleString() });
             localStorage.setItem('app_orders', JSON.stringify(orders));
 
-            alert("تم حفظ طلبك بنجاح في النظام السحابي وسيتم متابعته!");
+            alert("تم حفظ طلبك بنجاح وسيتم متابعته والتسليم عبر فيسبوك!");
             document.getElementById('fbLink').value = "";
             document.getElementById('projectDetails').value = "";
         }
