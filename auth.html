@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل الدخول - المتجر البرمجي</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #0f172a; color: #f8fafc; margin: 0; display: flex; justify-content: center; align-items: center; height: 100vh; }
+        .box { background: #1e293b; padding: 35px; border-radius: 12px; width: 380px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); border: 1px solid #334155; box-sizing: border-box; }
+        h2 { text-align: center; color: #60a5fa; margin-bottom: 25px; }
+        .group { margin-bottom: 18px; }
+        label { display: block; margin-bottom: 6px; font-size: 14px; color: #94a3b8; }
+        input { width: 100%; padding: 12px; background: #0f172a; border: 1px solid #475569; color: white; border-radius: 8px; box-sizing: border-box; font-size: 14px; }
+        .btn { width: 100%; background: #2563eb; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px; font-size: 16px; }
+        .btn:hover { background: #1d4ed8; }
+        .dev-tag { position: absolute; bottom: 15px; font-size: 12px; color: #64748b; }
+    </style>
+</head>
+<body>
+
+    <div class="box">
+        <h2>تسجيل الدخول</h2>
+        <div class="group">
+            <label>البريد الإلكتروني</label>
+            <input type="email" id="email" placeholder="name@example.com">
+        </div>
+        <div class="group">
+            <label>كلمة المرور</label>
+            <input type="password" id="password" placeholder="********">
+        </div>
+        <button class="btn" onclick="authAction()">دخول / تسجيل</button>
+        <div style="text-align: center; margin-top: 15px;">
+            <a href="index.html" style="color: #94a3b8; text-decoration: none; font-size: 13px;">العودة للرئيسية 🏠</a>
+        </div>
+    </div>
+
+    <div class="dev-tag">إدارة وتطوير أبو حازم العمري</div>
+
+    <script>
+        function authAction() {
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value.trim();
+
+            if (!email || !password) {
+                alert("يرجى إدخال البريد الإلكتروني وكلمة المرور!");
+                return;
+            }
+
+            localStorage.setItem('user_email', email);
+            alert("تم تسجيل الدخول بنجاح!");
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>
